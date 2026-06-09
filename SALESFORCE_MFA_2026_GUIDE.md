@@ -31,40 +31,50 @@ For organizations using SSO (Okta, Entra ID, etc.), Salesforce will inspect the 
 
 | Tier | Recognized Signals (ACR/AMR) |
 | :--- | :--- |
-| **Phishing-Resistant** | `fido`, `fido2`, `pki`, `X509`, `cert`, `hwk`, `sc`, `Smartcard`, `TLSClient` |
-| **Standard** | `multipleauthn`, `webauthn`, `otp`, `passkey`, `okta_verify` |
-| **Weak / None** | `pwd` |
-
-**Note:** If your IdP does not send a recognized signal, Salesforce will prompt the user to enroll in a Salesforce-managed MFA method, even if they already completed MFA at the IdP level.
+| **Phishing-Resistant** | `fido`, `fido2`, `pki`, `X509`, `cert`, `hwk`, `sc`, `Smartcard`, `TLSClient`, `wia` |
+| **Standard** | `multipleauthn`, `webauthn`, `otp`, `passkey`, `okta_verify`, `Face`, `mobiletwofactorcontract` |
+| **Weak / None** | `pwd`, `sms`, `tel`, `email` |
 
 ---
 
-## 3. Step-by-Step Solution Roadmap
+## 3. Preparation Roadmap & Alternatives
 
 ### Step 1: Inventory and Audit
-*   Identify all users in scope for "Phishing-Resistant" MFA. This includes any user with the *System Administrator* profile or the *Modify All Data*, *View All Data*, *Customize Application*, or *Author Apex* permissions.
-*   Audit existing SSO configurations to see what signals (ACR/AMR) your Identity Provider is currently sending.
+*   **Identify Privileged Users:** Search for users with the specific "Big 4" permissions (*Modify All Data, View All Data, Customize Application, Author Apex*) or the System Admin profile.
+*   **Audit SSO Signals:** Use a SAML tracer to inspect the `AuthnContextClassRef` (SAML) or `amr` (OIDC) claims currently sent by your IdP.
 
-### Step 2: Upgrade MFA Methods
-*   **For Admins:** Deploy WebAuthn-compatible methods such as FIDO2 Security Keys (e.g., YubiKey) or Built-in Authenticators (e.g., Windows Hello, Touch ID).
-*   **For Employees:** Ensure all users have at least one registered MFA method (Salesforce Authenticator, TOTP apps, or Passkeys).
+### Step 2: Choose MFA Methods (Alternatives)
+*   **Alternative A: Hardware Security Keys (Best for Desktop)**
+    *   Deploy FIDO2/WebAuthn keys (e.g., YubiKey, Google Titan).
+    *   *Pros:* Highest security, phishing-resistant.
+*   **Alternative B: Built-in Authenticators (Best for Mobility)**
+    *   Use biometrics like **Touch ID**, **Face ID**, or **Windows Hello**.
+    *   *Pros:* Seamless user experience, no extra hardware needed.
+*   **Note:** Standard TOTP apps (Salesforce Authenticator, Google Authenticator) **do not** qualify for privileged users in 2026.
 
 ### Step 3: Align IdP Configuration
-*   Work with your Identity/SSO team to ensure that when a user authenticates with a strong method, the corresponding signal (like `fido` or `multipleauthn`) is passed to Salesforce in the SAML response or OIDC token.
+*   **Okta:**
+    *   Configure Authentication Policies to require "Possession factor type is Hardware-protected" for Salesforce Admins.
+    *   Okta will transmit `hwk` or `swk` signals, which Salesforce recognizes as phishing-resistant.
+*   **Microsoft Entra ID:**
+    *   Use Conditional Access policies to require phishing-resistant MFA.
+    *   Map the `Authentication Methods Reference` (AMR) claim to pass signals like `fido` or `x509`.
+*   **Alternative Backstop:** If you cannot configure your IdP signals correctly, have admins register a **Salesforce-native** security key. Salesforce will prompt for this local key after the SSO login, satisfying the requirement without IdP changes.
 
-### Step 4: Enable "Step-up" Policies
-*   Navigate to **Setup > Identity Verification**.
-*   Enable the **"Require periodic step-up authentication"** policy for Reports and Dashboards.
-*   Configure the re-authentication cadence (e.g., 60 minutes) based on your organization's risk profile.
+### Step 4: Handle Integration/API Users
+*   **The "Exempt" Permission Change:** The "Waive Multi-Factor Authentication for Exempt Users" permission will no longer automatically exempt users after enforcement.
+*   **The Solution:** For legitimate automation/service accounts, you must file a case with **Salesforce Support** to request a permanent technical exemption once enforcement begins.
 
-### Step 5: Sandbox Testing
-*   Activate the MFA enforcement setting in a Sandbox environment before the June 22, 2026 deadline.
-*   Verify that admins can log in successfully using phishing-resistant methods.
-*   Confirm that SSO users are not being double-prompted if signals are correctly aligned.
+---
+
+## 4. Implementation Checklist
+1. [ ] **Verify My Domain:** Ensure My Domain is active (prerequisite).
+2. [ ] **Enable Phishing-Resistant Methods:** Go to *Setup > Identity Verification* and check "Let users use built-in authenticators" and "Let users use security keys".
+3. [ ] **Pilot in Sandbox:** Test the login flow for one admin using each alternative method.
+4. [ ] **Communicate:** Alert admins that their login flow *will* change on July 1, 2026.
 
 ---
 
 ## Resources
-*   [Prepare for MFA Enforcement for All Employee Users](https://help.salesforce.com/s/articleView?id=005321561)
-*   [Prepare for Phishing-Resistant MFA Enforcement for Privileged Users](https://help.salesforce.com/s/articleView?id=005321563)
-*   [Step-up Authentication for Report Actions](https://help.salesforce.com/s/articleView?id=005321566)
+*   [Official Salesforce MFA Roadmap](https://help.salesforce.com/s/articleView?id=005317465)
+*   [Registering a Security Key](https://help.salesforce.com/s/articleView?id=sf.identity_verification_register_security_key.htm)
