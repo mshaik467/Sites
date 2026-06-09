@@ -1,6 +1,7 @@
 import json
 import os
 import smtplib
+import html
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime
@@ -10,8 +11,9 @@ class PriceEngine:
         self.history_file = history_file
         self.history = self.load_history()
         self.recipient_email = os.environ.get("RECIPIENT_EMAIL", "mshaik467@gmail.com")
-        self.sender_email = os.environ.get("SENDER_EMAIL")
+        self.sender_email = os.environ.get("SENDER_EMAIL", "tracker@example.com")
         self.sender_password = os.environ.get("SENDER_PASSWORD")
+        self.email_log = "price_tracker/sent_emails.html"
 
     def load_history(self):
         if os.path.exists(self.history_file):
@@ -23,21 +25,18 @@ class PriceEngine:
         return []
 
     def save_history(self, new_results):
-        # We append new results with a timestamp batch
         entry = {
             "timestamp": datetime.now().isoformat(),
             "results": new_results
         }
         self.history.append(entry)
-        # Keep only last 30 runs to save space
         self.history = self.history[-30:]
         with open(self.history_file, "w") as f:
             json.dump(self.history, f, indent=4)
 
     def find_previous_price(self, retailer, title):
-        if len(self.history) < 1: # Change from 2 to 1 because we call find_previous_price BEFORE appending current
+        if len(self.history) < 1:
             return None
-        # Look in the last run currently in history
         prev_run = self.history[-1]["results"]
         for item in prev_run:
             if item["retailer"] == retailer and item["title"] == title:
@@ -66,32 +65,50 @@ class PriceEngine:
         return drops, best_watch, best_phone
 
     def send_email(self, drops, best_watch, best_phone, current_results):
-        if not self.sender_email or not self.sender_password:
-            print("Email credentials not set. Skipping email.")
-            return
-
         subject = "Daily Samsung Price Report - Canada"
-        body = f"<h2>Samsung Price Report - {datetime.now().strftime('%Y-%m-%d')}</h2>"
+        date_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        body = f"<h2>Samsung Price Report - {date_str}</h2>"
 
         if drops:
             body += "<h3>🚨 Price Drops Detected!</h3><ul>"
             for item in drops:
-                body += f"<li><b>{item['title']}</b> at {item['retailer']}: <span style='color:green'>${item['price']}</span> (was ${item['prev_price']})</li>"
+                t = html.escape(item['title'])
+                r = html.escape(item['retailer'])
+                body += f"<li><b>{t}</b> at {r}: <span style='color:green'>${item['price']}</span> (was ${item['prev_price']})</li>"
             body += "</ul>"
         else:
             body += "<p>No price drops detected since the last run.</p>"
 
         body += "<h3>🏆 Best Current Deals</h3>"
         if best_watch:
-            body += f"<p><b>Cheapest Watch:</b> {best_watch['title']} - <b>${best_watch['price']}</b> at {best_watch['retailer']}</p>"
+            t = html.escape(best_watch['title'])
+            r = html.escape(best_watch['retailer'])
+            body += f"<p><b>Cheapest Watch:</b> {t} - <b>${best_watch['price']}</b> at {r}</p>"
         if best_phone:
-            body += f"<p><b>Cheapest Phone:</b> {best_phone['title']} - <b>${best_phone['price']}</b> at {best_phone['retailer']}</p>"
+            t = html.escape(best_phone['title'])
+            r = html.escape(best_phone['retailer'])
+            body += f"<p><b>Cheapest Phone:</b> {t} - <b>${best_phone['price']}</b> at {r}</p>"
 
         body += "<h3>Detailed Comparison</h3>"
         body += "<table border='1'><tr><th>Retailer</th><th>Product</th><th>Current Price</th></tr>"
-        for item in sorted(current_results, key=lambda x: x['price'])[:20]: # Show top 20
-            body += f"<tr><td>{item['retailer']}</td><td>{item['title']}</td><td>${item['price']}</td></tr>"
+        for item in sorted(current_results, key=lambda x: x['price'])[:20]:
+            t = html.escape(item['title'])
+            r = html.escape(item['retailer'])
+            body += f"<tr><td>{r}</td><td>{t}</td><td>${item['price']}</td></tr>"
         body += "</table>"
+
+        # Always log to file for verification
+        try:
+            if not os.path.exists("price_tracker"):
+                os.makedirs("price_tracker")
+            with open(self.email_log, "a") as f:
+                f.write(f"<hr><h3>Subject: {subject}</h3>{body}")
+        except Exception as e:
+            print(f"Failed to log email to file: {e}")
+
+        if not self.sender_email:
+            print("Sender email not set. Email logged to file.")
+            return
 
         msg = MIMEMultipart()
         msg['From'] = self.sender_email
@@ -100,29 +117,21 @@ class PriceEngine:
         msg.attach(MIMEText(body, 'html'))
 
         try:
-            # Use local relay or unauthenticated SMTP if no password provided
             if self.sender_password:
                 with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
                     server.login(self.sender_email, self.sender_password)
                     server.send_message(msg)
+                print("Email sent successfully via Gmail.")
             else:
-                # Attempt to send without login (for local relays or specific setups)
+                # Attempt unauthenticated
                 with smtplib.SMTP("localhost") as server:
                     server.send_message(msg)
-            print("Email sent successfully.")
+                print("Email sent successfully via localhost.")
         except Exception as e:
-            print(f"Failed to send email: {e}")
+            print(f"Failed to send email via SMTP: {e}. Report saved to {self.email_log}")
 
     def process(self, current_results):
         drops, best_watch, best_phone = self.generate_report(current_results)
         self.save_history(current_results)
         self.send_email(drops, best_watch, best_phone, current_results)
         return drops
-
-if __name__ == "__main__":
-    # Test logic
-    engine = PriceEngine()
-    if os.path.exists("price_tracker/current_results.json"):
-        with open("price_tracker/current_results.json", "r") as f:
-            curr = json.load(f)
-            engine.process(curr)
