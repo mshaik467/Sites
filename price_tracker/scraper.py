@@ -9,18 +9,38 @@ class Scraper:
     def __init__(self):
         self.results = []
         self.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+        self.postal_code = "L5B 2C9" # Mississauga City Hall postal code
 
     def clean_price(self, price_str):
         if not price_str or price_str == "N/A":
             return None
-        # Remove $, commas, and whitespace
         clean = re.sub(r'[^\d.]', '', price_str)
         try:
             return float(clean)
         except ValueError:
             return None
 
+    async def set_staples_location(self, page):
+        try:
+            print("Setting Staples location for Mississauga...")
+            await page.goto("https://www.staples.ca/", wait_until="domcontentloaded")
+            await asyncio.sleep(3)
+
+            postal_btn = await page.query_selector("button:has-text('Change location'), .delivery-location-selector")
+            if postal_btn:
+                await postal_btn.click()
+                await asyncio.sleep(1)
+
+            postal_input = await page.query_selector("input[placeholder*='Postal Code'], #postal-code-input")
+            if postal_input:
+                await postal_input.fill(self.postal_code)
+                await postal_input.press("Enter")
+                await asyncio.sleep(2)
+        except Exception as e:
+            print(f"Could not set Staples location: {e}")
+
     async def scrape_staples(self, page):
+        await self.set_staples_location(page)
         queries = [
             "Samsung Galaxy Watch 7",
             "Samsung Galaxy Watch 8",
@@ -51,8 +71,8 @@ class Scraper:
                     if is_watch or is_phone:
                         price = self.clean_price(price_text)
                         if price:
-                            availability_el = await item.query_selector(".product-thumbnail__availability")
-                            availability = await availability_el.inner_text() if availability_el else "Available"
+                            availability_text = await item.inner_text()
+                            availability = "Available for Pickup (Mississauga)" if "Pick up" in availability_text else "In Stock"
 
                             self.results.append({
                                 "retailer": "Staples",
@@ -67,7 +87,27 @@ class Scraper:
             except Exception as e:
                 print(f"Error scraping Staples for {query}: {e}")
 
+    async def set_samsung_location(self, page):
+        try:
+            print("Setting Samsung location for Ontario...")
+            await page.goto("https://www.samsung.com/ca/watches/all-watches/", wait_until="domcontentloaded")
+            await asyncio.sleep(5)
+            selector = await page.query_selector("button[aria-label*='Select your province'], .cod03-delivery-location-selector__button")
+            if selector:
+                await selector.click()
+                await asyncio.sleep(2)
+                ontario = await page.query_selector("text=Ontario")
+                if ontario:
+                    await ontario.click()
+                    confirm = await page.query_selector("button:has-text('Confirm')")
+                    if confirm:
+                        await confirm.click()
+                        await asyncio.sleep(3)
+        except Exception as e:
+            print(f"Could not set Samsung location: {e}")
+
     async def scrape_samsung(self, page):
+        await self.set_samsung_location(page)
         urls = [
             "https://www.samsung.com/ca/watches/all-watches/",
             "https://www.samsung.com/ca/smartphones/galaxy-a/"
@@ -101,7 +141,7 @@ class Scraper:
                                 "title": title.strip(),
                                 "price": price,
                                 "currency": "CAD",
-                                "availability": "In Stock" if "buy" in text_lower or "add to cart" in text_lower else "Check Site",
+                                "availability": "In Stock (Ontario)" if "buy" in text_lower or "add to cart" in text_lower else "Check Site",
                                 "url": url,
                                 "timestamp": datetime.now().isoformat(),
                                 "category": "Watch" if is_watch else "Phone"
@@ -166,6 +206,9 @@ class Scraper:
                 print(f"Error scraping Amazon for {query}: {e}")
 
     async def run_all(self):
+        # Clear results from previous run to avoid data duplication
+        self.results = []
+
         async with async_playwright() as p:
             browser = await p.chromium.launch()
             context = await browser.new_context(user_agent=self.user_agent)

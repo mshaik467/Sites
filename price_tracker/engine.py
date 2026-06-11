@@ -14,6 +14,7 @@ class PriceEngine:
         self.sender_email = os.environ.get("SENDER_EMAIL", "tracker@example.com")
         self.sender_password = os.environ.get("SENDER_PASSWORD")
         self.email_log = "price_tracker/sent_emails.html"
+        self.dashboard_data = "price_tracker/dashboard/data.json"
 
     def load_history(self):
         if os.path.exists(self.history_file):
@@ -33,6 +34,15 @@ class PriceEngine:
         self.history = self.history[-30:]
         with open(self.history_file, "w") as f:
             json.dump(self.history, f, indent=4)
+
+        # Also save to dashboard data
+        try:
+            if not os.path.exists("price_tracker/dashboard"):
+                os.makedirs("price_tracker/dashboard")
+            with open(self.dashboard_data, "w") as f:
+                json.dump(entry, f, indent=4)
+        except Exception as e:
+            print(f"Failed to save dashboard data: {e}")
 
     def find_previous_price(self, retailer, title):
         if len(self.history) < 1:
@@ -132,6 +142,7 @@ class PriceEngine:
 
     def process(self, current_results):
         drops, best_watch, best_phone = self.generate_report(current_results)
+        # save_history now also saves dashboard data
         self.save_history(current_results)
         self.send_email(drops, best_watch, best_phone, current_results)
         return drops

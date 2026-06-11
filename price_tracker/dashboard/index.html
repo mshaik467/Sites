@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samsung Price Tracker Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Samsung Price Tracker</h1>
+        <p id="last-updated">Last Updated: Loading...</p>
+    </header>
+
+    <main>
+        <section id="highlights">
+            <div class="card" id="best-watch">
+                <h2>⌚ Cheapest Watch</h2>
+                <div class="content">Loading...</div>
+            </div>
+            <div class="card" id="best-phone">
+                <h2>📱 Cheapest 5G Phone</h2>
+                <div class="content">Loading...</div>
+            </div>
+        </section>
+
+        <section id="filters">
+            <button onclick="filterResults('All')" class="active">All</button>
+            <button onclick="filterResults('Watch')">Watches</button>
+            <button onclick="filterResults('Phone')">Phones</button>
+        </section>
+
+        <section id="results-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Retailer</th>
+                        <th>Price (CAD)</th>
+                        <th>Availability</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody id="data-body">
+                    <!-- Data will be injected here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>Tracking Samsung Galaxy Watch 7/8 and A13/A14/A15 5G in Canada (Mississauga).</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
