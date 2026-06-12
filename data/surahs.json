@@ -1,0 +1,171 @@
+[
+    {
+        "id": 1,
+        "name": "Al-Fatihah",
+        "transliteration": "Al-Fatihah",
+        "translation": "The Opening",
+        "summary": "The first chapter of the Quran, considered the essence of the Quran. It is a prayer for guidance, lordship, and mercy of Allah.",
+        "highlights": [
+            "Praise of Allah as the Lord of all worlds",
+            "Acknowledgement of His Mercy and Compassion",
+            "Seeking guidance to the straight path"
+        ],
+        "lessons": [
+            "Importance of starting every action with the name of Allah",
+            "Gratitude towards the Creator",
+            "Dependence on Allah for guidance and help"
+        ],
+        "message": "Direct communication between the servant and the Creator, emphasizing monotheism and the path of righteousness."
+    },
+    {
+        "id": 2,
+        "name": "Al-Baqarah",
+        "transliteration": "Al-Baqarah",
+        "translation": "The Cow",
+        "summary": "The longest chapter, covering laws, stories of previous prophets, and the foundational principles of Islam.",
+        "highlights": [
+            "The story of the Cow and the Children of Israel",
+            "Ayat al-Kursi (The Verse of the Throne)",
+            "The change of Qibla to Makkah",
+            "Laws regarding fasting, charity, and marriage"
+        ],
+        "lessons": [
+            "Obedience to Allah's commands without hesitation",
+            "The dangers of hypocrisy and disbelief",
+            "The importance of patience and prayer in times of trial"
+        ],
+        "message": "Guidance for mankind to live a life of righteousness, social justice, and devotion to One God."
+    },
+    {
+        "id": 12,
+        "name": "Yusuf",
+        "transliteration": "Yusuf",
+        "translation": "Joseph",
+        "summary": "Dedicated almost entirely to the story of Prophet Yusuf (Joseph), described by Allah as 'the best of stories'.",
+        "highlights": [
+            "Yusuf's dream of the eleven stars, the sun, and the moon",
+            "His brothers' betrayal and him being cast into the well",
+            "His trial in the house of the Aziz and his imprisonment",
+            "His rise to power in Egypt and reunion with his family"
+        ],
+        "lessons": [
+            "Patience and trust in Allah's plan lead to ultimate success",
+            "Forgiveness is superior to revenge",
+            "Allah's decree always prevails over human plots"
+        ],
+        "message": "The truth that through patience and piety, Allah provides a way out from every difficulty."
+    },
+    {
+        "id": 18,
+        "name": "Al-Kahf",
+        "transliteration": "Al-Kahf",
+        "translation": "The Cave",
+        "summary": "A Meccan surah that provides four stories to illustrate the trials of faith, wealth, knowledge, and power.",
+        "highlights": [
+            "The People of the Cave who slept for centuries",
+            "The man with two gardens",
+            "The journey of Prophet Musa and Khidr",
+            "The story of Dhul-Qarnayn"
+        ],
+        "lessons": [
+            "Faith in Allah protects one from trials",
+            "True wealth is that of the soul, not worldly possessions",
+            "Patience is necessary when seeking knowledge"
+        ],
+        "message": "Reminder of the temporary nature of this world and the ultimate victory of those who remain steadfast in faith."
+    },
+    {
+        "id": 19,
+        "name": "Maryam",
+        "transliteration": "Maryam",
+        "translation": "Mary",
+        "summary": "Named after the mother of Prophet Isa (Jesus), it discusses the miracles of birth and the lineage of prophets.",
+        "highlights": [
+            "The birth of Prophet Yahya to Zakariyya in old age",
+            "The miraculous birth of Prophet Isa to Maryam",
+            "The story of Prophet Ibrahim and his father",
+            "The mention of many other prophets as examples of guidance"
+        ],
+        "lessons": [
+            "Nothing is impossible for Allah",
+            "Devotion and chastity of Maryam as a model for believers",
+            "The message of all prophets was the same: Tawhid"
+        ],
+        "message": "Allah's mercy is vast, and His signs are present for those who reflect on the stories of the righteous."
+    },
+    {
+        "id": 36,
+        "name": "Ya-Sin",
+        "transliteration": "Ya-Sin",
+        "translation": "Ya-Sin",
+        "summary": "Often called the 'Heart of the Quran', it focuses on the revelation, resurrection, and the fate of those who deny the truth.",
+        "highlights": [
+            "The message of the messengers sent to the city",
+            "The signs of Allah's creation in nature",
+            "The description of the Day of Judgment and Paradise/Hell",
+            "The concept of the dead being brought back to life"
+        ],
+        "lessons": [
+            "Accountability for every action in the Hereafter",
+            "Reflection on the signs of Allah in the universe",
+            "The truth of the Prophet's message"
+        ],
+        "message": "A warning to the heedless and a source of comfort to the believers regarding the certainty of the afterlife."
+    },
+    {
+        "id": 55,
+        "name": "Ar-Rahman",
+        "transliteration": "Ar-Rahman",
+        "translation": "The Most Merciful",
+        "summary": "A beautiful recitation listing the blessings of Allah and repeatedly asking, 'Which of the favors of your Lord will you deny?'",
+        "highlights": [
+            "Creation of man and jinn",
+            "The two seas meeting but not mixing",
+            "The description of the gardens of Paradise",
+            "The ephemeral nature of all things except Allah"
+        ],
+        "lessons": [
+            "Gratitude for the countless favors of Allah",
+            "Recognition of Allah's absolute sovereignty and mercy",
+            "Equality of man and jinn in their obligation to worship Allah"
+        ],
+        "message": "The ultimate call to recognize and be grateful for the Divine Mercy that encompasses all creation."
+    },
+    {
+        "id": 67,
+        "name": "Al-Mulk",
+        "transliteration": "Al-Mulk",
+        "translation": "The Sovereignty",
+        "summary": "Emphasizes Allah's power and control over the universe, and the purpose of life being a test of deeds.",
+        "highlights": [
+            "The perfection of Allah's creation in the heavens",
+            "The consequence of denying the warnings of messengers",
+            "Allah's knowledge of the hidden and the manifest",
+            "The source of all provision and life"
+        ],
+        "lessons": [
+            "Life is a test to see who is best in conduct",
+            "Reflection on the vastness of the universe leads to the Creator",
+            "The importance of seeking Allah's protection from the punishment of the grave"
+        ],
+        "message": "Acknowledgment of Allah as the sole King and Owner of all things, to whom all shall return."
+    },
+    {
+        "id": 112,
+        "name": "Al-Ikhlas",
+        "transliteration": "Al-Ikhlas",
+        "translation": "Sincerity",
+        "summary": "A short but profound surah that defines the concept of Tawhid (the Oneness of Allah).",
+        "highlights": [
+            "Declaration of Allah's Absolute Oneness",
+            "Allah is Eternal and Absolute",
+            "He begets not, nor was He begotten"
+        ],
+        "lessons": [
+            "The purity of faith in One God",
+            "Rejecting any partners or equals to Allah",
+            "The foundation of Islamic belief"
+        ],
+        "message": "The clearest definition of the Creator, removing all misconceptions about the nature of God."
+    }
+]
