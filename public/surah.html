@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="emerald">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quran Insights - Surah Detail</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Dashboard</span>
+            </a>
+            <div class="theme-switch">
+                <button id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container detail-container">
+        <div id="surah-detail" class="surah-detail">
+            <!-- Detail content will be injected here -->
+            <div class="loader">Loading Surah details...</div>
+        </div>
+
+        <div class="navigation-buttons">
+            <button id="prev-surah" class="btn-nav hidden"><i class="fas fa-chevron-left"></i> Previous</button>
+            <button id="next-surah" class="btn-nav hidden">Next <i class="fas fa-chevron-right"></i></button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Quran Insights. Adhering to Islamic Principles.</p>
+    </footer>
+
+    <script src="js/surah.js"></script>
+</body>
+</html>
