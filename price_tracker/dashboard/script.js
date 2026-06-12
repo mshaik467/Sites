@@ -2,7 +2,7 @@ let allData = [];
 
 async function fetchData() {
     try {
-        const response = await fetch('data.json');
+        const response = await fetch('/api/data');
         const data = await response.json();
         allData = data.results;
 
