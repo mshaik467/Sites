@@ -1,0 +1,13 @@
+node_modules/
+__pycache__/
+*.pyc
+agent.log
+price_tracker/history.json
+price_tracker/current_results.json
+price_tracker/dashboard/data.json
+agent.pid
+nohup.out
+*.png
+*.html
+test_run*.log
+.env
